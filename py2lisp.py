@@ -4,7 +4,7 @@ File = "./chess-set-7.snapshot.1"
 Voc = ['a','b','c','d','e','f','g','h']
 Ipos = ['e','d','f','c','g','b','h','a']
 
-print("(setq BOARD '(",end='')
+print("(setq BOARD '((\"GRAVE\" (200 200 0))",end=' ')
 space = 22
 for i in range(8):
 	for j in range(8):
@@ -33,12 +33,12 @@ print("))",)
 #print ent array
 print("(setq white_ents '(", end='')
 for i in range(16):
-	print('("{:s}" . "tmp")'.format(Set[i]),end=' ')
+	print('("{:s}" "tmp")'.format(Set[i]),end=' ')
 print("))",)
 
 #print ent array
 print("(setq black_ents '(", end='')
 for i in range(16):
-	print('("{:s}" . "tmp")'.format(Set[i]),end=' ')
+	print('("{:s}" "tmp")'.format(Set[i]),end=' ')
 print("))",)
 
