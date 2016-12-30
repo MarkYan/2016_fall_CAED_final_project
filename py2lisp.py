@@ -25,20 +25,20 @@ print("))",)
 print("(setq black_pos '(", end='')
 for i in range(16):
 	if i < 8:
-		print('("{:s}" "{:s}7")'.format(Set[i], Ipos[i]),end=' ')
+		print('("{:s}" "{:s}8")'.format(Set[i], Ipos[i]),end=' ')
 	else:
-		print('("{:s}" "{:s}8")'.format(Set[i], Voc[i-8]),end=' ')
+		print('("{:s}" "{:s}7")'.format(Set[i], Voc[i-8]),end=' ')
 print("))",)
 
 #print ent array
 print("(setq white_ents '(", end='')
 for i in range(16):
-	print('("{:s}")'.format(Set[i]),end=' ')
+	print('("{:s}" . "tmp")'.format(Set[i]),end=' ')
 print("))",)
 
 #print ent array
 print("(setq black_ents '(", end='')
 for i in range(16):
-	print('("{:s}")'.format(Set[i]),end=' ')
+	print('("{:s}" . "tmp")'.format(Set[i]),end=' ')
 print("))",)
 
