@@ -1,3 +1,8 @@
+(defun STD-SLEEP (secs / endt)
+	(setq endt (+ (getvar "DATE") (/ secs 86400.0)))
+	(while (< (getvar "DATE") endt) T)
+) ; not varified
+
 (defun initialize (/)
 	(graphscr) (command "osnap" "none")
 	(command "ucs" "w")
@@ -132,6 +137,121 @@
 	)	
 )
 
+(defun move_piece_a (player ent start end / name interval maxHigh maxAngle sx sy sz xStep yStep zStep angStep x y z a b)
+	; add moving animation here
+	(setq interval 10
+		  maxHigh  20
+		  maxAngle 45
+		  sx (car (get_position start))
+		  sy (nth 1 (get_position start))
+		  sz 0
+		  ex (car (get_position end))
+		  ey (nth 1 (get_position end))
+		  xStep (/ (- ex sx) interval)
+		  yStep (/ (- ey sy) interval)
+		  zStep (/ maxHigh (/ interval 2))
+		  angStep (/ maxAngle (/ maxAngle 2))
+		  x sx y sy z sz
+		  a (list x y z)
+	)
+	(repeat interval
+		(if (< interval (/ interval 2)) 
+			(progn 
+				(setq z (+ z zStep))
+				; rotate here
+				(if (= player 0) 
+					(progn
+						(command "ucs" ent "") ; can be bug
+						(command "ucs" "y" "90")
+						(command "rotate" ent "" a angStep)
+						(command "ucs" "w")
+					)
+					; (progn
+					; 	(command "ucs" ent "")
+					; 	(command "ucs" "y" "90")
+					; 	(command "rotate" ent "" a (- 0 angStep))
+					; 	(command "ucs" "w")
+					; )
+				)
+			);end if case 
+			(progn
+				(setq z (- z zStep))
+				; rotate here
+				(if (= player 0) 
+					(progn
+						(command "ucs" ent "")
+						(command "ucs" "y" "90")
+						(command "rotate" ent "" a (- 0 angStep))
+						(command "ucs" "w")
+					)
+					; (progn
+					; 	(command "ucs" ent "")
+					; 	(command "ucs" "y" "90")
+					; 	(command "rotate" ent "" a angStep)
+					; 	(command "ucs" "w")
+					; )
+				)
+			)
+		)
+		(setq x (+ x xStep)
+			  y (+ y yStep)
+			  b (list x y z)
+		)
+		(command "move" ent "" a b)
+		(setq a b)
+		(STD-SLEEP 5)
+	)
+	;(command "move" ent "" (get_position start) (get_position end))
+	(setq name (get_name_by_ent player ent))
+	(set_pos_by_name player name end)
+)
+
+(defun move_piece_k (player ent start end / name)
+	(setq interval 10
+		  maxHigh  5
+		  maxAngle 95
+		  xLen 30
+		  yLen 30
+		  sx (car (get_position start))
+		  sy (nth 1 (get_position start))
+		  sz 0
+		  ex (+ sx xLen)
+		  ey (+ sx yLen)
+		  ez maxHigh
+		  epos (list ex ey ez)
+		  xStep (/ (- ex sx) interval)
+		  yStep (/ (- ey sy) interval)
+		  zStep (/ maxHigh interval)
+		  angStep (/ maxAngle (/ maxAngle 2))
+		  x sx y sy z sz
+		  a (list x y z)
+	)
+	(repeat interval
+		(progn 
+			(STD-SLEEP 2)
+			(setq z (+ z zStep)
+				  x (+ x xStep)
+				  y (+ y yStep)
+				  b (list x y z)
+			)
+			(command "move" ent "" a b)
+			(setq a b)
+			; rotate here
+			(command "ucs" ent "")
+			(command "ucs" "y" "90")
+			(command "rotate" ent "" a angStep)
+			(command "ucs" "w")
+		)
+	)
+	(command "ucs" ent "")
+	(command "ucs" "y" "90")
+	(command "rotate" ent "" epos (- 0 maxAngle))
+	(command "ucs" "w")
+	(command "move" ent "" epos (get_position end))
+	(setq name (get_name_by_ent player ent))
+	(set_pos_by_name player name end)
+)
+
 (defun move_piece (player ent start end / name)
 	(command "move" ent "" (get_position start) (get_position end))
 	(setq name (get_name_by_ent player ent))
@@ -213,6 +333,7 @@
 	(setq flag 1)
 	(setq turns 0) ;0 is white, 1 is black
 	(while (= flag 1)
+		(if (= mode 1) (STD-SLEEP 30)) ;delay if input from file
 		(if (= turns 0)
 			(progn
 				(if (= mode 0) 
@@ -237,22 +358,23 @@
 			)
 			(progn
 				(setq cmdType (substr cmd 3 1))
-				(if (= cmdType "x") ;kill if needed
-					(progn
-						(setq st   (substr cmd 4 2)
-							  name (get_name_by_pos turns st)
-							  ent  (get_ent_by_name turns name)
-						)
-						(move_piece turns ent st "GRAVE")
-					)
-				)
 				;moving
 				(setq st   (substr cmd 1 2)
 					  end  (substr cmd 4 2)
 					  name (get_name_by_pos turns st)
 					  ent  (get_ent_by_name turns name)
 				)
-				(move_piece turns ent st end)
+				(move_piece_a turns ent st end)
+				
+				(if (= cmdType "x") ;kill if needed
+					(progn
+						(setq st   (substr cmd 4 2)
+							  name (get_name_by_pos turns st)
+							  ent  (get_ent_by_name turns name)
+						)
+						(move_piece_k turns ent st "GRAVE")
+					)
+				)
 			)
 		);end cond
 		(if (= turns 0) (setq turns 1) (setq turns 0))
