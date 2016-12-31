@@ -161,7 +161,7 @@
 				; rotate here
 				(if (= player 0) 
 					(progn
-						(command "ucs" ent "") ; can be bug
+						(command "ucs" "3p" a (list (1+ x) y z) (list x (1+ y) z)) ; can be bug
 						(command "ucs" "y" "90")
 						(command "rotate" ent "" a angStep)
 						(command "ucs" "w")
@@ -179,7 +179,7 @@
 				; rotate here
 				(if (= player 0) 
 					(progn
-						(command "ucs" ent "")
+						(command "ucs" "3p" a (list (1+ x) y z) (list x (1+ y) z))
 						(command "ucs" "y" "90")
 						(command "rotate" ent "" a (- 0 angStep))
 						(command "ucs" "w")
@@ -206,7 +206,7 @@
 	(set_pos_by_name player name end)
 )
 
-(defun move_piece_k (player ent start end / name)
+(defun move_piece_k (player ent start end / a b name interval maxAngle maxHigh xLen yLen sx sy sz ex ey ez epos xStep yStep angStep x y z)
 	(setq interval 10
 		  maxHigh  5
 		  maxAngle 95
@@ -237,13 +237,13 @@
 			(command "move" ent "" a b)
 			(setq a b)
 			; rotate here
-			(command "ucs" ent "")
+			(command "ucs" "3p" a (list (1+ x) y z) (list x (1+ y) z))
 			(command "ucs" "y" "90")
 			(command "rotate" ent "" a angStep)
 			(command "ucs" "w")
 		)
 	)
-	(command "ucs" ent "")
+	(command "ucs" "3p" a (list (1+ x) y z) (list x (1+ y) z))
 	(command "ucs" "y" "90")
 	(command "rotate" ent "" epos (- 0 maxAngle))
 	(command "ucs" "w")
@@ -365,7 +365,7 @@
 					  ent  (get_ent_by_name turns name)
 				)
 				(move_piece_a turns ent st end)
-				
+
 				(if (= cmdType "x") ;kill if needed
 					(progn
 						(setq st   (substr cmd 4 2)
