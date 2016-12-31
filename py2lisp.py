@@ -4,11 +4,11 @@ File = "./chess-set-7.snapshot.1"
 Voc = ['a','b','c','d','e','f','g','h']
 Ipos = ['e','d','f','c','g','b','h','a']
 
-print("(setq BOARD '((\"GRAVE\" (200 200 0))",end=' ')
+print("(setq BOARD '((\"GRAVE\" (250.0 250.0 0.0))",end=' ')
 space = 22
 for i in range(8):
 	for j in range(8):
-		print('("{:s}{:d}" ({:d} {:d} {:d}))'.format(Voc[j], 8-i, (-7 + j * 2) * space, (7 - i * 2) * space, 0),end=' ')
+		print('("{:s}{:d}" ({:.1f} {:.1f} {:.1f}))'.format(Voc[j], 8-i, (-7 + j * 2) * space, (7 - i * 2) * space, 0),end=' ')
 
 print("))")
 

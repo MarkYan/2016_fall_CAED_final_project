@@ -1,12 +1,10 @@
 b1-c3
 f7-f5
 e2-e4
-5fxe4
+f5xe4
 c3xe4
 g8-f6
 e4xf6
 g7xf6
 d1-h5
 -
-//0-0
-//0-0-0
